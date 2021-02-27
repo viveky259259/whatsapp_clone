@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/models/chat_user.dart';
+import 'package:whatsapp_clone/models/message_item.dart';
+import 'package:whatsapp_clone/screens/widgets/custom_message_item_widget.dart';
 import 'package:whatsapp_clone/screens/widgets/custom_text_box_widget.dart';
 
 class ChatMessageScreen extends StatefulWidget {
@@ -12,8 +14,24 @@ class ChatMessageScreen extends StatefulWidget {
 }
 
 class _ChatMessageScreenState extends State<ChatMessageScreen> {
+  List<MessageItem> messages;
+
+  @override
+  void initState() {
+    super.initState();
+    print('HI im in init');
+
+    messages = [
+      MessageItem('Hi', DateTime.now(),isMine: true),
+      MessageItem('Hi', DateTime.now(), isMine:false),
+      MessageItem('Hi', DateTime.now(),isMine: true),
+      MessageItem('Hi', DateTime.now(),isMine: false),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('HI im in build');
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -26,7 +44,7 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
               SizedBox(
                 width: 16,
               ),
-              Text(widget.user.name),
+              Expanded(child: Text(widget.user.name)),
             ],
           ),
           actions: [
@@ -40,14 +58,9 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
                 onPressed: () {
                   print('call');
                 }),
-            IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  print('menu');
-                }),
           ],
         ),
-        body: ListView(
+        body: Column(
           children: [
             SizedBox(
               height: 8,
@@ -57,8 +70,16 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
               height: 16,
             ),
             Center(
-                child: CustomTextBoxWidget(
-                    'Message of this chat is encrypted', Colors.yellow.shade300)),
+                child: CustomTextBoxWidget('Message of this chat is encrypted',
+                    Colors.yellow.shade300)),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return CustomMessageItemWidget(messages[index]);
+                },
+                itemCount: messages.length,
+              ),
+            )
           ],
         ));
   }

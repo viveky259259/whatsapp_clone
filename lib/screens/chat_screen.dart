@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/apis/chats.dart';
 import 'package:whatsapp_clone/models/chat_user.dart';
+import 'package:whatsapp_clone/apis/https1.dart';
 import 'package:whatsapp_clone/models/message_item.dart';
 import 'package:whatsapp_clone/screens/chat_message_screen.dart';
 
@@ -67,64 +69,99 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('TCET Whatsapp'),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                print('search clicked');
-              }),
-          IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                print('setting clicked');
-              })
-        ],
-      ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          ChatUser user = chatUsers[index];
-
-          return ListTile(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ChatMessageScreen(user);
-              }));
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('TCET Whatsapp'),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  print('search clicked');
+                }),
+            IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  print('setting clicked');
+                })
+          ],
+          bottom: TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.chat),
+                // text: 'Chat',
+              ),
+              Tab(
+                icon: Icon(Icons.account_circle),
+                // text: 'Status',
+              ),
+              Tab(
+                icon: Icon(Icons.call),
+                // text: 'Calls',
+              ),
+            ],
+            onTap: (index) {
+              if (index == 2) {
+                Api().getMessageList();
+              }
             },
-            leading: CircleAvatar(
-              child: Image.network(user.userProfileURL),
-            ),
-            title: Text(user.name),
-            subtitle: Text('How is your scholorship going?'),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  user.timeInString(),
-                  style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
-                ),
-                CircleAvatar(
-                  child: Text(
-                    '${user.noOfUnreadMessages}',
-                    style: TextStyle(fontSize: 10),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            ListView.builder(
+              itemBuilder: (context, index) {
+                ChatUser user = chatUsers[index];
+
+                return ListTile(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ChatMessageScreen(user);
+                    }));
+                  },
+                  leading: CircleAvatar(
+                    child: Image.network(user.userProfileURL),
                   ),
-                  backgroundColor: Colors.green,
-                  maxRadius: 8,
-                )
-              ],
+                  title: Text(user.name),
+                  subtitle: Text('How is your scholorship going?'),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        user.timeInString(),
+                        style: TextStyle(
+                            color: Colors.green, fontWeight: FontWeight.bold),
+                      ),
+                      CircleAvatar(
+                        child: Text(
+                          '${user.noOfUnreadMessages}',
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        backgroundColor: Colors.green,
+                        maxRadius: 8,
+                      )
+                    ],
+                  ),
+                );
+              },
+              itemCount: chatUsers.length,
             ),
-          );
-        },
-        itemCount: chatUsers.length,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.chat_bubble),
-        onPressed: () {
-          //body
-        },
+            Center(
+              child: Icon(Icons.account_circle),
+            ),
+            Center(
+              child: Icon(Icons.call),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.chat_bubble),
+          onPressed: () {
+            //body
+          },
+        ),
       ),
     );
   }
