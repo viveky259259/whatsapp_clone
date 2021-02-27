@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/models/chat_user.dart';
 import 'package:whatsapp_clone/apis/https1.dart';
 import 'package:whatsapp_clone/models/message_item.dart';
 import 'package:whatsapp_clone/screens/chat_message_screen.dart';
+import 'package:whatsapp_clone/screens/optimize_this.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -103,7 +104,12 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
             onTap: (index) {
               if (index == 2) {
-                Api().getMessageList();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OptimizeThis()));
+              } else if (index == 1) {
+                ChatsApi().getChats().then((value) {
+                  print(value);
+                });
               }
             },
           ),
